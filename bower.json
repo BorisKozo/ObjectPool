@@ -1,0 +1,10 @@
+{
+  "name": "ObjectPool",
+  "version": "0.0.1",
+  "main": "app/object-pool.js",
+  "ignore": [
+    "package.json",
+    ".gitignore",
+    "test"
+  ]
+}

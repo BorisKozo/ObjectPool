@@ -1,0 +1,31 @@
+{
+    "name": "ObjectPool",
+    "description": "Object Pool implementation for Node.js and the Browser",
+    "version": "0.0.1",
+    "keywords": ["object","pool","object pool"],
+    "author": "Boris Kozorovitzky",
+    "homepage": "",
+    "license": ["MIT"],
+    "repository": {
+        "type": "git",
+        "url": ""
+    },
+    "bugs": {
+        "url": ""
+    },
+    "directories": {
+        "app": "./app",
+        "test": "./test"
+    },
+    "devDependencies": { 
+        "mocha": "1.13.0",
+        "should": "1.3.0"
+    },
+    "scripts": {
+        "test": "mocha test"
+    },
+    "engines": {
+        "node": ">0.10.0"
+    },
+    "main": "./app/object-pool"
+}
