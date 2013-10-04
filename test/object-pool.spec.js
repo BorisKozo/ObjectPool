@@ -39,22 +39,22 @@ describe('Pool', function () {
     item.should.equal(item2);
   });
 
-  it('should offload 2 out of 3 items', function () {
+  it('should delete 2 out of 3 items', function () {
     var pool = new op.$Pool();
     var item = {};
     pool.release(item);
     pool.release(item);
     pool.release(item);
-    pool.offload(2);
+    pool.delete(2);
     pool.count().should.equal(1);
   });
 
-  it('should offload 3 out of 2 items', function () {
+  it('should delete 3 out of 2 items', function () {
     var pool = new op.$Pool();
     var item = {};
     pool.release(item);
     pool.release(item);
-    pool.offload(3);
+    pool.delete(3);
     pool.count().should.equal(0);
   });
 
@@ -114,6 +114,20 @@ describe('Constructor Generator', function () {
     generator.count().should.equal(10);
   });
 
+  it('Generator should delete 5 points', function () {
+    generator.delete(5);
+    generator.count().should.equal(5);
+  });
+
+  it('Generator should delete fifth of the points', function () {
+    generator.delete(0.2);
+    generator.count().should.equal(8);
+  });
+
+  it('Generator should create 5 more points', function () {
+    generator.create(5);
+    generator.count().should.equal(15);
+  });
 
 });
 
@@ -158,5 +172,33 @@ describe('Clone Generator', function () {
     generator.count().should.equal(10);
   });
 
+  it('Generator should delete 5 points', function () {
+    generator.delete(5);
+    generator.count().should.equal(5);
+  });
+
+  it('Generator should delete fifth of the points', function () {
+    generator.delete(0.2);
+    generator.count().should.equal(8);
+  });
+
+  it('Generator should create 5 more points', function () {
+    generator.create(5);
+    generator.count().should.equal(15);
+  });
+
+
+  it('Generator should clone using the default clone method', function () {
+    generator = op.generate({ x: 0, y: 0 }, { count: 2});
+    should.exist(generator.clone);
+    console.log(generator.item);
+    generator.count().should.equal(2);
+    var item = generator.get();
+    console.log(item);
+    should.exist(item.x);
+    should.exist(item.y);
+    item.x.should.equal(0);
+    item.y.should.equal(0);
+  });
 
 });
