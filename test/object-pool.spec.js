@@ -14,6 +14,17 @@ describe('Object Pool', function () {
     should.exist(generator.item);
   });
 
+  it('should have an array generator', function () {
+    should.exist(op.array);
+    var arr = op.array.get();
+    should.exist(arr);
+    should.exist(arr.length);
+    arr.length.should.equal(0);
+    arr.push("Hello");
+    op.array.release(arr);
+    arr.length.should.equal(0);
+  });
+
 
 });
 
@@ -129,6 +140,35 @@ describe('Constructor Generator', function () {
     generator.count().should.equal(15);
   });
 
+  it('Generator be initialized with data', function () {
+    generator = op.generate({}, { data: [1, 2, 3] });
+    generator.count().should.equal(3);
+    should.strictEqual(generator.options.data, null);
+  });
+
+  it('Generator be initialized with data and count', function () {
+    generator = op.generate({}, { data: [1, 2, 3], count:5 });
+    generator.count().should.equal(5);
+    should.strictEqual(generator.options.data, null);
+  });
+
+  it('Generator with static regeneration should not return null', function () {
+    generator = op.generate({}, { regenerate: 1 });
+    generator.count().should.equal(0);
+    var item = generator.get();
+    generator.count().should.equal(0);
+    should.exist(item);
+  });
+
+  it('Generator with dynamic regeneration should not return null', function () {
+    generator = op.generate({}, { regenerate: function () { return 3;} });
+    generator.count().should.equal(0);
+    var item = generator.get();
+    generator.count().should.equal(2);
+    should.exist(item);
+  });
+
+
 });
 
 describe('Clone Generator', function () {
@@ -191,14 +231,40 @@ describe('Clone Generator', function () {
   it('Generator should clone using the default clone method', function () {
     generator = op.generate({ x: 0, y: 0 }, { count: 2});
     should.exist(generator.clone);
-    console.log(generator.item);
     generator.count().should.equal(2);
     var item = generator.get();
-    console.log(item);
     should.exist(item.x);
     should.exist(item.y);
     item.x.should.equal(0);
     item.y.should.equal(0);
+  });
+
+  it('Generator be initialized with data', function () {
+    generator = op.generate({}, { data: [1, 2, 3] });
+    generator.count().should.equal(3);
+    should.strictEqual(generator.options.data, null);
+  });
+
+  it('Generator be initialized with data and count', function () {
+    generator = op.generate({}, { data: [1, 2, 3], count: 5 });
+    generator.count().should.equal(5);
+    should.strictEqual(generator.options.data, null);
+  });
+
+  it('Generator with static regeneration should not return null', function () {
+    generator = op.generate({}, { regenerate: 1 });
+    generator.count().should.equal(0);
+    var item = generator.get();
+    generator.count().should.equal(0);
+    should.exist(item);
+  });
+
+  it('Generator with dynamic regeneration should not return null', function () {
+    generator = op.generate({}, { regenerate: function () { return 3; } });
+    generator.count().should.equal(0);
+    var item = generator.get();
+    generator.count().should.equal(2);
+    should.exist(item);
   });
 
 });
