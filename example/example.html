@@ -2,6 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <title>JavaScript Particle System with ObjectPool</title>
+    <script src="object-pool.js"></script>
 </head>
 <body>
    
@@ -15,6 +16,8 @@
                 emissionRate = 20,
                 objectSize = 3; // drawSize of emitter/field
 
+            var vectorGenerator;
+            var particleGenerator;
 
             var canvas = document.querySelector('canvas');
             var ctx = canvas.getContext('2d');
@@ -37,11 +40,35 @@
                 console.log("dblclick", e);
             }
 
+            function Vector(x, y) {
+                this.x = x || 0;
+                this.y = y || 0;
+            }
+
+            Vector.prototype.add = function (vector) {
+                this.x += vector.x;
+                this.y += vector.y;
+            }
+
+            Vector.prototype.getMagnitude = function () {
+                return Math.sqrt(this.x * this.x + this.y * this.y);
+            };
+
+            Vector.prototype.getAngle = function () {
+                return Math.atan2(this.y, this.x);
+            };
+
+            Vector.fromAngle = function (angle, magnitude) {
+                return vectorGenerator.get(magnitude * Math.cos(angle), magnitude * Math.sin(angle));
+            };
+
+            vectorGenerator = window.ObjectPool.generate(Vector, { count: 20000, init: Vector, regenerate: 1000 });
+
 
             function Particle(point, velocity, acceleration) {
-                this.position = point || new Vector(0, 0);
-                this.velocity = velocity || new Vector(0, 0);
-                this.acceleration = acceleration || new Vector(0, 0);
+                this.position = point || vectorGenerator.get(0, 0);
+                this.velocity = velocity || vectorGenerator.get(0, 0);
+                this.acceleration = acceleration || vectorGenerator.get(0, 0);
             }
 
             Particle.prototype.submitToFields = function (fields) {
@@ -66,13 +93,27 @@
                 }
 
                 // update our particle's acceleration
-                this.acceleration = new Vector(totalAccelerationX, totalAccelerationY);
+                vectorGenerator.release(this.acceleration);
+                this.acceleration = vectorGenerator.get(totalAccelerationX, totalAccelerationY);
             };
 
             Particle.prototype.move = function () {
                 this.velocity.add(this.acceleration);
                 this.position.add(this.velocity);
             };
+
+            particleGenerator = window.ObjectPool.generate(Particle, {
+                count: 20000, init: Particle, regenerate: 50, clear: function () {
+                    vectorGenerator.release(this.position);
+                    this.position = null;
+
+                    vectorGenerator.release(this.velocity);
+                    this.velocity = null;
+
+                    vectorGenerator.release(this.acceleration);
+                    this.acceleration = null;
+                }
+            });
 
             function Field(point, mass) {
                 this.position = point;
@@ -84,27 +125,6 @@
                 this.drawColor = mass < 0 ? "#f00" : "#0f0";
             }
 
-            function Vector(x, y) {
-                this.x = x || 0;
-                this.y = y || 0;
-            }
-
-            Vector.prototype.add = function (vector) {
-                this.x += vector.x;
-                this.y += vector.y;
-            }
-
-            Vector.prototype.getMagnitude = function () {
-                return Math.sqrt(this.x * this.x + this.y * this.y);
-            };
-
-            Vector.prototype.getAngle = function () {
-                return Math.atan2(this.y, this.x);
-            };
-
-            Vector.fromAngle = function (angle, magnitude) {
-                return new Vector(magnitude * Math.cos(angle), magnitude * Math.sin(angle));
-            };
 
             function Emitter(point, velocity, spread) {
                 this.position = point; // Vector
@@ -121,13 +141,13 @@
                 var magnitude = this.velocity.getMagnitude();
 
                 // The emitter's position
-                var position = new Vector(this.position.x, this.position.y);
+                var position = vectorGenerator.get(this.position.x, this.position.y);
 
                 // New velocity based off of the calculated angle and magnitude
                 var velocity = Vector.fromAngle(angle, magnitude);
 
                 // return our new Particle!
-                return new Particle(position, velocity);
+                return particleGenerator.get(position, velocity);
             };
 
             function addNewParticles() {
@@ -154,7 +174,10 @@
                     var pos = particle.position;
 
                     // If we're out of bounds, drop this particle and move on to the next
-                    if (pos.x < 0 || pos.x > boundsX || pos.y < 0 || pos.y > boundsY) continue;
+                    if (pos.x < 0 || pos.x > boundsX || pos.y < 0 || pos.y > boundsY) {
+                        particleGenerator.release(particle);
+                        continue;
+                    }
 
                     // Update velocities and accelerations to account for the fields
                     particle.submitToFields(fields);
