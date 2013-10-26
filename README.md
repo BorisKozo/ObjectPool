@@ -12,12 +12,12 @@ dealing with particles.
 ## Installation
 For Node.js 
 ````
-npm install XXX
+npm install objectpool
 ````
 For the browser you can install via [Bower](http://bower.io/)
 
 ````
-bower install XXX
+bower install objectpool
 ````
 or by copying [object-pool.min.js](/app/object-pool.min.js)
 
@@ -265,3 +265,65 @@ are completely removed from the pool and are eligible for garbage collection.
   generator.delete(0.5); 
   console.log(generator.count()); // 50
 ```
+
+### Generator#create(n)
+
+Creates n objects and releases them into the pool. The creation method
+is the one appropriate for the generator (constructor or cloning) and
+uses the constructor function or the clone method provided when the
+generator was created.
+
+```js
+  function Point(x,y) {
+    this.x = x;
+    this.y = y;
+  }
+
+  var generator = op.generate(Point); // Creates an empty pool
+  generator.create(10);
+  console.log(generator.count()); // 10
+```
+
+### Generator#count
+
+A function that returns the number of objects in the generator pool
+
+ ```js
+  function Point(x,y) {
+    this.x = x;
+    this.y = y;
+  }
+
+  var generator = op.generate({}, { count: 3 }); 
+  console.log(generator.count()); // 3
+```
+
+## Generating Arrays
+
+The Object Pool Object comes with a build in array generator.
+
+```js
+var arr = op.array.get(); // returns []
+```
+
+This is a preconfigured clone based generator that has nothing special about it.
+It is there for your convenience.
+
+## Tests and Examples
+
+The tests are using the ```mocha``` farmework. To run the tests do
+```npm test```
+
+There is a particle example using object pools for the browser in the example directory (see example.html).
+You can run it directly from the browser. The example was written by Jarrod Overson (@jsoverson), the 
+original sources are (here)[http://html5hub.com/build-a-javascript-particle-system].
+
+
+## Legal Mumbo Jumbo (MIT License)
+Copyright (c) 2013 Boris Kozorovitzky, 
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.

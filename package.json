@@ -1,5 +1,5 @@
 {
-    "name": "ObjectPool",
+    "name": "objectpool",
     "description": "Object Pool implementation for Node.js and the Browser",
     "version": "0.0.1",
     "keywords": ["object","pool","object pool"],
@@ -8,10 +8,10 @@
     "license": ["MIT"],
     "repository": {
         "type": "git",
-        "url": ""
+        "url": "https://github.com/BorisKozo/ObjectPool"
     },
     "bugs": {
-        "url": ""
+        "url": "https://github.com/BorisKozo/ObjectPool/issues"
     },
     "directories": {
         "app": "./app",
