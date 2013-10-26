@@ -1,7 +1,7 @@
 {
     "name": "objectpool",
     "description": "Object Pool implementation for Node.js and the Browser",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "keywords": ["object","pool","object pool"],
     "author": "Boris Kozorovitzky",
     "homepage": "",

@@ -41,7 +41,7 @@ var op = require('objectpool');
 
 In the browser
 ```html
- <scrip t src="/path/to/object-pool/object-pool.min.js"></script>
+ <script src="/path/to/object-pool/object-pool.min.js"></script>
 ```
 
 ```js
