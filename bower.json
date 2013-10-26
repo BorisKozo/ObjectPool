@@ -1,10 +1,22 @@
 {
-  "name": "ObjectPool",
+  "name": "objectpool",
   "version": "0.0.1",
-  "main": "app/object-pool.js",
+  "main": "app/object-pool.min.js",
   "ignore": [
     "package.json",
     ".gitignore",
     "test"
-  ]
+  ],
+  "homepage": "https://github.com/BorisKozo/ObjectPool",
+  "authors": [
+    "Boris Kozorovitzky <majorzbzzn@gmail.com>"
+  ],
+  "description": "Object Pool implementation for Node.js and the Browser",
+  "keywords": [
+    "object",
+    "pool",
+    "object",
+    "pool"
+  ],
+  "license": "MIT"
 }

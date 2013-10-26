@@ -36,7 +36,7 @@ The generators are used to retrieve and release an object.
 
 In Node.js
 ```js
-var op = require('object-pool');
+var op = require('objectpool');
 ```
 
 In the browser
