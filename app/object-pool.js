@@ -52,7 +52,7 @@
     return tempValue;
   }
 
-  //Returns an object from the pool or null otherwise;
+  //Adds an object to the pool;
   exports.$Pool.prototype.release = function (item) {
     this._items[this._head] = item;
     this._head++;
